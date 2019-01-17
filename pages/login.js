@@ -1,20 +1,27 @@
 import NavBar from "../components/NavBar.js";
 import Footer from "../components/Footer.js";
+import Box1 from "../components/Box1.js";
 
-const Login = () => (
-  <div>
-    <style jsx global>{`
-      body {
-        margin: 0
-      }
-    `}</style>
+class Login extends React.Component
+{
+  render()
+  {
+    return (
+      <div>
+        <style jsx global>{`
+          body {
+            margin: 0
+          }
+        `}</style>
 
-    <NavBar />
+        <NavBar />
 
-    <div style={{height: 1000}}>Hello Next.js</div>
+        <Box1 />
 
-    <Footer />
-  </div>
-)
+        <Footer />
+      </div>
+    );
+  }
+}
 
 export default Login;
