@@ -1,7 +1,7 @@
 import NavBar from "../components/NavBar.js";
 import Footer from "../components/Footer.js";
 
-const Index = () => (
+const Login = () => (
   <div>
     <style jsx global>{`
       body {
@@ -17,4 +17,4 @@ const Index = () => (
   </div>
 )
 
-export default Index;
+export default Login;
