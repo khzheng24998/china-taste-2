@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const styles = {
-	backgroundColor: "#404040",
+	backgroundColor: "#24292e",
 	color: "white",
 	fontFamily: "Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
 	height: 55,
