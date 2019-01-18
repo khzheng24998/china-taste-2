@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Field from "../Field.js";
+import Field from "../components/Field.js";
 
 const boxStyles = {
   border: "solid 2px #e6e6e6",
@@ -34,9 +34,7 @@ const columnStyles = {
   display: "inline-block",
   width: "45%",
   verticalAlign: "top",
-  paddingLeft: 20,
-  paddingTop: 10,
-  paddingBottom: 15
+  paddingLeft: 20
 };
 
 const dividerStyles = {

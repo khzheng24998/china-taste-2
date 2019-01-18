@@ -3,11 +3,20 @@ class Field extends React.Component
   constructor(props)
   {
     super(props);
-
     this.getLabel = this.getLabel.bind(this);
   }
 
-  getLabel() { return this.props.id.charAt(0).toUpperCase() + this.props.id.slice(1); }
+  getLabel()
+  {
+    let label = "";
+    for (let i = 0; i < this.props.id.length; i++)
+    {
+      if (this.props.id[i] == this.props.id[i].toUpperCase())
+        label += " ";
+      label += this.props.id[i];
+    }
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
 
   render()
   {
