@@ -15,9 +15,7 @@ const boxHeaderStyles = {
   borderBottom: "solid 2px #e6e6e6",
   fontSize: 20,
   fontWeight: 500,
-  paddingTop: 3,
-  paddingBottom: 5,
-  paddingLeft: 5
+  padding: "3px 0px 5px 5px"
 };
 
 const boxFooterStyles = {
@@ -25,9 +23,7 @@ const boxFooterStyles = {
   borderTop: "solid 2px #e6e6e6",
   fontSize: 20,
   fontWeight: 500,
-  paddingTop: 5,
-  paddingBottom: 8,
-  paddingLeft: 8
+  padding: "5px 0px 8px 8px"
 };
 
 const columnStyles = {
@@ -56,14 +52,26 @@ const linkStyles = {
   cursor: "pointer"
 }
 
+const buttonStyles = {
+  color: "white",
+  backgroundColor: "#28a745",
+  border: "solid 1px #23903c",
+  borderRadius: 3,
+  fontSize: 16,
+  padding: "5px 8px 5px 8px",
+  cursor: "pointer"
+}
+
 class Box1 extends React.Component
 {
   constructor(props)
   {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      fields: {
+        email: "",
+        password: ""
+      },
       error: {
         email: false,
         password: false
@@ -77,7 +85,8 @@ class Box1 extends React.Component
   updateInputValue(e)
   {
     let update = {};
-    update[e.target.id] = e.target.value;
+    update.fields = this.state.fields;
+    update.fields[e.target.id] = e.target.value;
     update.error = this.state.error;
     update.error[e.target.id] = false;
     this.setState(update);
@@ -85,12 +94,11 @@ class Box1 extends React.Component
 
   handleClick()
   {
+    //Check to see if fields are non-empty
     let update = this.state.error;
-
-    if (this.state.email.length === 0)
-      update.email = true;
-    if (this.state.password.length === 0)
-      update.password = true;
+    for (const key in this.state.fields)
+      if (this.state.fields.hasOwnProperty(key) && this.state.fields[key].length === 0)
+        update[key] = true;
 
     this.setState({error: update});
   }
@@ -101,24 +109,30 @@ class Box1 extends React.Component
       <style jsx>{` p {margin-top: 5px; margin-bottom: 5px; font-size: 14px;} `}</style>
       <div style={boxHeaderStyles}>User Login</div>
       <div>
-        <div style={columnStyles}>
 
-          <Field id="email" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
-          <Field type="password" id="password" error={this.state.error["password"]} value={this.state.password} onChange={this.updateInputValue} />
-          <p style={linkStyles}>Forgot password?</p>
+        <div style={columnStyles}>
+          <div style={{paddingTop: 10}}>
+            <Field id="email" error={this.state.error["email"]} value={this.state.fields["email"]} onChange={this.updateInputValue} />
+            <Field type="password" id="password" error={this.state.error["password"]} value={this.state.fields["password"]} onChange={this.updateInputValue} />
+            <p style={linkStyles}>Forgot password?</p>
+            <br />
+          </div>
         </div>
 
         <div style={dividerStyles}></div>
 
         <div style={columnStyles}>
-          <p style={bold}>Don't have an account?</p>
-          <p style={{marginBottom: 15}}><Link href="/create-account"><span style={linkStyles}>Create one now.</span></Link> It's simple and free!</p>
-          <p style={bold}>Creating an account allows you to:</p>
-          <p><strong>&bull;</strong> Save order info for quick checkout</p>
-          <p><strong>&bull;</strong> View all your past orders</p>
+          <div style={{paddingTop: 10}}>
+            <p style={bold}>Don't have an account?</p>
+            <p style={{marginBottom: 15}}><Link href="/create-account"><span style={linkStyles}>Create one now.</span></Link> It's simple and free!</p>
+            <p style={bold}>Creating an account allows you to:</p>
+            <p><strong>&bull;</strong> Save order info for quick checkout</p>
+            <p><strong>&bull;</strong> View all your past orders</p>
+          </div>
         </div>
+
       </div>
-      <div style={boxFooterStyles}><button style={{fontSize: 16, padding: 3, cursor: "pointer"}} onClick={this.handleClick}>Sign In</button></div>
+      <div style={boxFooterStyles}><button style={buttonStyles} onClick={this.handleClick}>Sign In</button></div>
     </div>);
 	}
 }
@@ -129,24 +143,47 @@ class Box2 extends React.Component
   {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      fields: {
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      },
       error: {
+        firstName: false,
+        lastName: false,
+        phoneNumber: false,
         email: false,
-        password: false
+        password: false,
+        confirmPassword: false
       }
     };
 
     this.updateInputValue = this.updateInputValue.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   updateInputValue(e)
   {
     let update = {};
-    update[e.target.id] = e.target.value;
+    update.fields = this.state.fields;
+    update.fields[e.target.id] = e.target.value;
     update.error = this.state.error;
     update.error[e.target.id] = false;
     this.setState(update);
+  }
+
+  handleClick()
+  {
+    //Check to see if fields are non-empty
+    let update = this.state.error;
+    for (const key in this.state.fields)
+      if (this.state.fields.hasOwnProperty(key) && this.state.fields[key].length === 0)
+        update[key] = true;
+
+    this.setState({error: update});
   }
 
   render()
@@ -155,27 +192,35 @@ class Box2 extends React.Component
       <style jsx>{` p {margin-top: 5px; margin-bottom: 5px; font-size: 14px;} `}</style>
       <div style={boxHeaderStyles}>Create your account</div>
       <div>
-        <div style={columnStyles}>
-          <Field id="firstName" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
-        </div>
-        <div style={columnStyles}>
-          <Field id="lastName" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
+
+        <div style={{paddingTop: 5, paddingBottom: 5}}>
+          <div style={columnStyles}>
+            <Field id="firstName" error={this.state.error["firstName"]} value={this.state.fields["firstName"]} onChange={this.updateInputValue} />
+          </div>
+          <div style={columnStyles}>
+            <Field id="lastName" error={this.state.error["lastName"]} value={this.state.fields["lastName"]} onChange={this.updateInputValue} />
+          </div>
         </div>
 
-        <div style={{paddingLeft: 20}}>
-          <Field width={548} id="phoneNumber" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
-          <Field width={548} id="email" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
+        <div style={{paddingLeft: 20, paddingBottom: 5}}>
+          <Field width={548} id="phoneNumber" error={this.state.error["phoneNumber"]} value={this.state.fields["phoneNumber"]} onChange={this.updateInputValue} />
         </div>
 
-        <div style={columnStyles}>
-          <Field type="password" id="password" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
+        <div style={{paddingLeft: 20, paddingBottom: 5}}>
+          <Field width={548} id="email" error={this.state.error["email"]} value={this.state.fields["email"]} onChange={this.updateInputValue} />
         </div>
-        <div style={columnStyles}>
-          <Field type="password" id="confirmPassword" error={this.state.error["email"]} value={this.state.email} onChange={this.updateInputValue} />
+
+        <div style={{paddingBottom: 25}}>
+          <div style={columnStyles}>
+            <Field type="password" id="password" error={this.state.error["password"]} value={this.state.fields["password"]} onChange={this.updateInputValue} />
+          </div>
+          <div style={columnStyles}>
+            <Field type="password" id="confirmPassword" error={this.state.error["confirmPassword"]} value={this.state.fields["confirmPassword"]} onChange={this.updateInputValue} />
+          </div>
         </div>
 
       </div>
-      <div style={boxFooterStyles}><button style={{fontSize: 16, padding: 3, cursor: "pointer"}}>Create Account</button></div>
+      <div style={boxFooterStyles}><button style={buttonStyles} onClick={this.handleClick}>Create Account</button></div>
     </div>);
   }
 }
