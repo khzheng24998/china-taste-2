@@ -62,6 +62,27 @@ const buttonStyles = {
   cursor: "pointer"
 }
 
+const errorStyles = {
+  border: "solid 1px #ae3b1d",
+  borderRadius: 3,
+  backgroundColor: "#fad4ca",
+  textAlign: "center",
+  width: 240,
+  marginTop: 5
+}
+
+const post = function(url, data)
+{
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(response => response.json());
+}
+
 class Box1 extends React.Component
 {
   constructor(props)
@@ -75,7 +96,8 @@ class Box1 extends React.Component
       error: {
         email: false,
         password: false
-      }
+      },
+      invalidCredentials: false
     };
 
     this.updateInputValue = this.updateInputValue.bind(this);
@@ -92,15 +114,32 @@ class Box1 extends React.Component
     this.setState(update);
   }
 
-  handleClick()
+  async handleClick()
   {
     //Check to see if fields are non-empty
+    let error = false;
     let update = this.state.error;
     for (const key in this.state.fields)
       if (this.state.fields.hasOwnProperty(key) && this.state.fields[key].length === 0)
+      {
         update[key] = true;
+        error = true;
+      }
 
     this.setState({error: update});
+    if (error)
+      return;
+
+    //Send login request to server
+    let res = await post("/login", {
+      email: this.state.fields["email"],
+      password: this.state.fields["password"]
+    });
+
+    if (res.msg !== "ok")
+      this.setState({invalidCredentials: true});
+    else
+      this.setState({invalidCredentials: false});
   }
 
 	render()
@@ -112,6 +151,7 @@ class Box1 extends React.Component
 
         <div style={columnStyles}>
           <div style={{paddingTop: 10}}>
+            {this.state.invalidCredentials && <div style={errorStyles}><p style={{color: "#ae3b1d"}}>Email/password provided is incorrect</p></div>}
             <Field id="email" error={this.state.error["email"]} value={this.state.fields["email"]} onChange={this.updateInputValue} />
             <Field type="password" id="password" error={this.state.error["password"]} value={this.state.fields["password"]} onChange={this.updateInputValue} />
             <p style={linkStyles}>Forgot password?</p>

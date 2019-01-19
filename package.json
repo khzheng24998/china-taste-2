@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/khzheng24998/china-taste-2#readme",
   "dependencies": {
+    "bcrypt": "^3.0.3",
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "next": "^7.0.2",
     "react": "^16.7.0",
