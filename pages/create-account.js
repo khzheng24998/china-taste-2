@@ -26,11 +26,14 @@ class CreateAccountBox extends React.Component
         email: false,
         password: false,
         confirmPassword: false
-      }
+      },
+      passwordMsg: "Required field",
+      confirmPasswordMsg: "Required field"
     };
 
     this.updateInputValue = this.updateInputValue.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.meetsRequirements = this.meetsRequirements.bind(this);
   }
 
   updateInputValue(e)
@@ -46,12 +49,51 @@ class CreateAccountBox extends React.Component
   handleClick()
   {
     //Check to see if fields are non-empty
-    let update = this.state.error;
+    let error = false;
+    let update = {};
+    update.error = this.state.error;
     for (const key in this.state.fields)
       if (this.state.fields.hasOwnProperty(key) && this.state.fields[key].length === 0)
-        update[key] = true;
+      {
+        if (key === "password")
+          update.passwordMsg = "Required field";
+        if (key === "confirmPassword")
+          update.confirmPasswordMsg = "Required field";
 
-    this.setState({error: update});
+        update.error[key] = true;
+        error = true;
+      }
+
+    let password = this.state.fields["password"];
+    let confirmation = this.state.fields["confirmPassword"];
+    if (password.length > 0 && confirmation.length > 0 && password !== confirmation)
+    {
+      update.confirmPasswordMsg = "Does not match password";
+      update.error["confirmPassword"] = true;
+      error = true;
+    }
+
+    if (password.length > 0 && !this.meetsRequirements(password))
+    {
+      update.passwordMsg = "Password does not meet requirements";
+      update.error["password"] = true;
+      error = true;
+    }
+
+    this.setState(update);
+    if (error)
+      return;
+  }
+
+  meetsRequirements(password)
+  {
+    let letters = password.match(/[A-Za-z]/g);
+  	let numbers = password.match(/[0-9]/g);
+
+  	if (password.length < 8 || letters === null || numbers === null)
+  		return false;
+
+    return true;
   }
 
   render()
@@ -80,10 +122,14 @@ class CreateAccountBox extends React.Component
 
         <div style={{paddingBottom: 25}}>
           <div style={columnStyles}>
-            <Field type="password" id="password" error={this.state.error["password"]} value={this.state.fields["password"]} onChange={this.updateInputValue} />
+            <p style={{fontWeight: 450, fontSize: 16, margin: "5px 0px 5px 0px"}}>Password</p>
+            <input id="password" type="password" style={{width: 240, height: 22, fontSize: 14}} value={this.state.fields["password"]} onChange={this.updateInputValue}></input>
+            {this.state.error["password"] && <p style={{color: "red", fontSize: 14, margin: 0}}>{this.state.passwordMsg}</p>}
           </div>
           <div style={columnStyles}>
-            <Field type="password" id="confirmPassword" error={this.state.error["confirmPassword"]} value={this.state.fields["confirmPassword"]} onChange={this.updateInputValue} />
+            <p style={{fontWeight: 450, fontSize: 16, margin: "5px 0px 5px 0px"}}>Confirm Password</p>
+            <input id="confirmPassword" type="password" style={{width: 240, height: 22, fontSize: 14}} value={this.state.fields["confirmPassword"]} onChange={this.updateInputValue}></input>
+            {this.state.error["confirmPassword"] && <p style={{color: "red", fontSize: 14, margin: 0}}>{this.state.confirmPasswordMsg}</p>}
           </div>
         </div>
 

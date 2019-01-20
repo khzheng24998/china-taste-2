@@ -79,7 +79,7 @@ class LoginBox extends React.Component
             {this.state.invalidCredentials && <div style={errorStyles}><p style={{color: "#ae3b1d"}}>Email/password provided is incorrect</p></div>}
             <Field id="email" error={this.state.error["email"]} value={this.state.fields["email"]} onChange={this.updateInputValue} />
             <Field type="password" id="password" error={this.state.error["password"]} value={this.state.fields["password"]} onChange={this.updateInputValue} />
-            <p style={linkStyles}>Forgot password?</p>
+            <Link href="/forgot-password"><p style={linkStyles}>Forgot password?</p></Link>
             <br />
           </div>
         </div>
