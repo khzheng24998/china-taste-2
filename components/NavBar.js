@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import {post} from "../functions.js";
 
 const styles = {
 	backgroundColor: "#24292e",
@@ -49,6 +50,12 @@ class NavBar extends React.Component {
 	handleMouseEnter()
 	{
 		console.log("Detected mouse enter!");
+	}
+
+	async componentDidMount()
+	{
+		let res = await post("/get-session-info", {});
+		this.setState({ signedIn : (res.msg === "signed-in") ? true : false });
 	}
 
 	render()

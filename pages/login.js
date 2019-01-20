@@ -53,7 +53,7 @@ class LoginBox extends React.Component
       return;
 
     //Send login request to server
-    let res = await post("/login", {
+    let res = await post("/log-in", {
       email: this.state.fields["email"],
       password: this.state.fields["password"]
     });

@@ -12,6 +12,10 @@ const bodyParser = require('body-parser');
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 
+//For parsing cookies
+const cookieParser = require('cookie-parser');
+server.use(cookieParser());
+
 //Custom modules
 const Login = require("./login.js");
 

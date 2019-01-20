@@ -84,4 +84,15 @@ async function asyncLogIn(req, res)
 	res.send({ msg: "ok" });
 }
 
+async function asyncGetSessionInfo(req, res)
+{
+	let key = req.cookies.loginKey;
+	let session = await Database.findActiveSession(key);
+	if (session !== null)
+		res.send({ "msg": "signed-in", "firstName": session.firstName, "lastName": session.lastName });
+	else
+		res.send({ "msg": "signed-out" });
+}
+
 module.exports.asyncLogIn = asyncLogIn;
+module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
