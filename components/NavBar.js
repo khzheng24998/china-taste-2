@@ -53,6 +53,20 @@ const triangleStyles = {
 	right: "8%"
 }
 
+const noHoverStyles = {
+	color: "black",
+	backgroundColor: "white",
+	padding: "3px 0px 3px 10px",
+	cursor: "pointer"
+}
+
+const hoverStyles = {
+	color: "white",
+	backgroundColor: "#0366d6",
+	padding: "3px 0px 3px 10px",
+	cursor: "pointer"
+}
+
 class NavBar extends React.Component {
 
 	constructor(props)
@@ -61,16 +75,40 @@ class NavBar extends React.Component {
 		this.state = {
 			signedIn: false,
 			showDropDown: false,
-			name: ""
+			name: "",
+			hover: {
+				profile: false,
+				addresses: false,
+				pastOrders: false,
+				signOut: false
+			}
 		};
 
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+		this.handleMouseEnter2 = this.handleMouseEnter2.bind(this);
+		this.handleMouseLeave2 = this.handleMouseLeave2.bind(this);
 		this.handleClick = this.handleClick.bind(this);
 	}
 
 	handleMouseEnter() { this.setState({showDropDown: true}); }
 	handleMouseLeave() { this.setState({showDropDown: false}); }
+
+	handleMouseEnter2(e)
+	{
+		let update = {};
+		update.hover = this.state.hover;
+		update.hover[e.target.id] = true;
+		this.setState(update);
+	};
+
+	handleMouseLeave2(e)
+	{
+		let update = {};
+		update.hover = this.state.hover;
+		update.hover[e.target.id] = false;
+		this.setState(update);
+	};
 
 	async handleClick()
   {
@@ -96,6 +134,7 @@ class NavBar extends React.Component {
 			<div style={linkContainerStyles}>
 				<Link href="/"><p style={linkStyles}>Menu</p></Link>
 				<Link href="/about"><p style={linkStyles}>About Us</p></Link>
+
 				{this.state.signedIn && (<div style={linkStyles} onMouseEnter={this.handleMouseEnter}>
 					<img src="static/images/profile.png" width="20" style={{verticalAlign: "middle", marginBottom: 2}}/> &#9662;
 				</div>)}
@@ -106,13 +145,13 @@ class NavBar extends React.Component {
 							<p style={{marginBottom: 3}}>Signed in as</p>
 							<p style={{fontWeight: 450, marginTop: 0}}>{this.state.name}</p>
 						</div>
-						<div style={{padding: "2px 0px 2px 10px"}}>
-							<p>Your profile</p>
-							<p>Your addresses</p>
-							<p>Your past orders</p>
+						<div style={{padding: "0px 1px 0px 1px"}}>
+							<p id="profile" style={(this.state.hover["profile"]) ? hoverStyles : noHoverStyles} onMouseEnter={this.handleMouseEnter2} onMouseLeave={this.handleMouseLeave2}>Your profile</p>
+							<p id="addresses" style={(this.state.hover["addresses"]) ? hoverStyles : noHoverStyles} onMouseEnter={this.handleMouseEnter2} onMouseLeave={this.handleMouseLeave2}>Your addresses</p>
+							<p id="pastOrders" style={(this.state.hover["pastOrders"]) ? hoverStyles : noHoverStyles} onMouseEnter={this.handleMouseEnter2} onMouseLeave={this.handleMouseLeave2}>Your past orders</p>
 						</div>
-						<div style={{borderTop: "solid 1px #dddddd", padding: "2px 0px 2px 10px"}} onClick={this.handleClick}>
-							<p>Sign out</p>
+						<div style={{borderTop: "solid 1px #dddddd", padding: "0px 1px 0px 1px"}} onClick={this.handleClick}>
+							<p id="signOut" style={(this.state.hover["signOut"]) ? hoverStyles : noHoverStyles} onMouseEnter={this.handleMouseEnter2} onMouseLeave={this.handleMouseLeave2}>Sign out</p>
 						</div>
 				</div>)}
 
