@@ -58,6 +58,8 @@ class LoginBox extends React.Component
       password: this.state.fields["password"]
     });
 
+    console.log(document.cookie);
+
     this.setState({invalidCredentials: (res.msg !== "ok") ? true : false});
   }
 

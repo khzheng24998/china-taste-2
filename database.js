@@ -36,34 +36,41 @@ function getDb()
 	return _db;
 }
 
-function findUser(field, query)
+function findActiveSession(key) { return find("activeSessions", "key", key); }
+function findResetRequest(key) { return find("resetRequests", "key", key); }
+function findVerificationRequest(key) { return find("verificationRequests", "key", key); }
+function findUser(email) { return find("users", "userInfo.email", email); }
+
+//Return value: A Promise which resolves to a document
+function find(col, key, val)
 {
-	return new Promise(function(resolve, reject)
+	let init = initializeDb();
+	return init.then(function()
 	{
-		let init = initializeDb();
-		init.then(function()
-		{
-			let db = getDb();
-			let chinaTaste = db.db("chinataste");
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
 
-			let doc;
-			switch (field)
-			{
-				case "_id":
-					doc = chinaTaste.collection("users").findOne({ "_id": query });
-					break;
-				case "email":
-					doc = chinaTaste.collection("users").findOne({ "userInfo.email": query });
-					break;
-				default:
-					console.log("ERROR: findUser() - Invalid lookup method.");
-					resolve(null);
-					return;
-			}
-
-			resolve(doc);
-		});
+		let query = {};
+		query[key] = val;
+		return chinaTaste.collection(col).findOne(query);
 	});
 }
 
+//Return value: None
+function insert(col, doc)
+{
+	let init = initializeDb();
+	init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		chinaTaste.collection(col).insertOne(doc);
+	});
+}
+
+module.exports.insert = insert;
+
 module.exports.findUser = findUser;
+module.exports.findActiveSession = findActiveSession;
+module.exports.findResetRequest = findResetRequest;
+module.exports.findVerificationRequest = findVerificationRequest;

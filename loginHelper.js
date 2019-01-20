@@ -14,32 +14,47 @@ function checkPassword(password, hash)
 	return bcrypt.compare(password, hash).then(res => res);
 }
 
+//Return value: None
+function sessionGen(key, user)
+{
+	let session = {
+		"key": key,
+		"userId": user._id,
+		"firstName": user.userInfo.firstName,
+		"lastName": user.userInfo.lastName,
+		"email": user.userInfo.email
+	};
+
+	Database.insert("activeSessions", session);
+}
+
 //Return value: A string
-function asyncKeyGen(type)
+async function asyncKeyGen(type)
 {
 	let attempts = 0;
-	while (attempts < 50)
+	while (attempts < 10)
 	{
 		let key = crypto.randomBytes(24).toString('hex');
 		let entity = {};
-		/*switch (type)
+		switch (type)
 		{
 			case "session":
-				entity = await Database.findActiveSession("key", key);
+				entity = await Database.findActiveSession(key);
 				break;
 			case "reset":
-				entity = await Database.findResetRequest("key", key);
+				entity = await Database.findResetRequest(key);
 				break;
 			case "verification":
-				entity = await Database.findVerificationRequest("key", key);
+				entity = await Database.findVerificationRequest(key);
 				break;
 			default:
 				console.log("ERROR: asyncKeyGen() - Invalid type.");
 				break;
 		}
 
-		if (entity === null)*/
-		return key;
+		if (entity === null)
+			return key;
+
 		attempts++;
 	}
 }
@@ -49,7 +64,7 @@ function asyncKeyGen(type)
 async function asyncLogIn(req, res)
 {
 	let body = req.body;
-	let user = await Database.findUser("email", body.email);
+	let user = await Database.findUser(body.email);
 	if (user === null)
 	{
 		res.send({ msg: "invalid-credentials" });
@@ -63,10 +78,9 @@ async function asyncLogIn(req, res)
 		return;
 	}
 
-	/*let key = await asyncKeyGen("session");
-	asyncActiveSessionGen(key, user._id, user.userInfo);
-
-	res.cookie("loginKey", key);*/
+	let key = await asyncKeyGen("session");
+	sessionGen(key, user);
+	res.cookie("loginKey", key);
 	res.send({ msg: "ok" });
 }
 

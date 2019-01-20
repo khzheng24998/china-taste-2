@@ -1,3 +1,4 @@
+//Return value: A Promise which resolves to a JSON object
 const post = function(url, data)
 {
   return fetch(url, {
