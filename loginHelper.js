@@ -84,6 +84,21 @@ async function asyncLogIn(req, res)
 	res.send({ msg: "ok" });
 }
 
+async function asyncLogOut(req, res)
+{
+	let key = req.cookies.loginKey;
+	let session = await Database.findActiveSession(key);
+	if (session !== null)
+	{
+		//Database.deleteActiveSession(session._id);
+		res.clearCookie("loginKey");
+		res.send({ "msg": "ok" });
+		return;
+	}
+
+	res.send({ "msg": "error" });
+}
+
 async function asyncGetSessionInfo(req, res)
 {
 	let key = req.cookies.loginKey;
@@ -95,4 +110,5 @@ async function asyncGetSessionInfo(req, res)
 }
 
 module.exports.asyncLogIn = asyncLogIn;
+module.exports.asyncLogOut = asyncLogOut;
 module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
