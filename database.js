@@ -36,13 +36,15 @@ function getDb()
 	return _db;
 }
 
-function findActiveSession(key) { return find("activeSessions", "key", key); }
-function findResetRequest(key) { return find("resetRequests", "key", key); }
-function findVerificationRequest(key) { return find("verificationRequests", "key", key); }
-function findUser(email) { return find("users", "userInfo.email", email); }
+function findActiveSession(key) { return findDoc("activeSessions", "key", key); }
+function findResetRequest(key) { return findDoc("resetRequests", "key", key); }
+function findVerificationRequest(key) { return findDoc("verificationRequests", "key", key); }
+function findUser(email) { return findDoc("users", "userInfo.email", email); }
+
+function deleteActiveSession(id) { deleteDoc("activeSessions", id); }
 
 //Return value: A Promise which resolves to a document
-function find(col, key, val)
+function findDoc(col, key, val)
 {
 	let init = initializeDb();
 	return init.then(function()
@@ -57,7 +59,7 @@ function find(col, key, val)
 }
 
 //Return value: None
-function insert(col, doc)
+function insertDoc(col, doc)
 {
 	let init = initializeDb();
 	init.then(function()
@@ -68,9 +70,23 @@ function insert(col, doc)
 	});
 }
 
-module.exports.insert = insert;
+//Return value: None
+function deleteDoc(col, id)
+{
+	let init = initializeDb();
+	init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		chinaTaste.collection(col).deleteOne({ "_id": id });
+	});
+}
+
+module.exports.insertDoc = insertDoc;
 
 module.exports.findUser = findUser;
 module.exports.findActiveSession = findActiveSession;
 module.exports.findResetRequest = findResetRequest;
 module.exports.findVerificationRequest = findVerificationRequest;
+
+module.exports.deleteActiveSession = deleteActiveSession;

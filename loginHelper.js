@@ -9,10 +9,7 @@ const saltRounds = 12;
 /* Helper functions */
 
 //Return value: A Promise which resolves to a boolean
-function checkPassword(password, hash)
-{
-	return bcrypt.compare(password, hash).then(res => res);
-}
+function checkPassword(password, hash) { return bcrypt.compare(password, hash).then(res => res); }
 
 //Return value: None
 function sessionGen(key, user)
@@ -25,7 +22,7 @@ function sessionGen(key, user)
 		"email": user.userInfo.email
 	};
 
-	Database.insert("activeSessions", session);
+	Database.insertDoc("activeSessions", session);
 }
 
 //Return value: A string
@@ -90,7 +87,7 @@ async function asyncLogOut(req, res)
 	let session = await Database.findActiveSession(key);
 	if (session !== null)
 	{
-		//Database.deleteActiveSession(session._id);
+		Database.deleteActiveSession(session._id);
 		res.clearCookie("loginKey");
 		res.send({ "msg": "ok" });
 		return;
