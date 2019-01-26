@@ -9,7 +9,27 @@ const saltRounds = 12;
 /* Helper functions */
 
 //Return value: A Promise which resolves to a boolean
-function checkPassword(password, hash) { return bcrypt.compare(password, hash).then(res => res); }
+function checkPassword(password, hash)
+{
+	return bcrypt.compare(password, hash).then(res => res);
+}
+
+//Return value: A Promise which resolves to a hash
+function hashPassword(password)
+{
+	return bcrypt.hash(password, saltRounds).then(hash => hash);
+}
+
+function formatPhoneNumber(phoneNumber)
+{
+	let arr = phoneNumber.match(/[0-9]/g);
+	if (arr === null)
+		return "";
+
+	let noSpecialChars = arr.toString();
+	noSpecialChars = noSpecialChars.replace(/,/g, "");
+	return noSpecialChars;
+}
 
 //Return value: None
 function sessionGen(key, user)
@@ -22,7 +42,7 @@ function sessionGen(key, user)
 		"email": user.userInfo.email
 	};
 
-	Database.insertDoc("activeSessions", session);
+	Database.insertActiveSession(session);
 }
 
 //Return value: A string
@@ -106,6 +126,39 @@ async function asyncGetSessionInfo(req, res)
 		res.send({ "msg": "signed-out" });
 }
 
+async function asyncCreateAccount(req, res)
+{
+	let body = req.body;
+	let user = await Database.findUser(body.email);
+	if (user !== null)
+	{
+		res.send({ msg: "account-exists" });
+		return;
+	}
+
+	let phoneNumber = formatPhoneNumber(body.phoneNumber);
+	let password = await hashPassword(body.password);
+
+	let userInfo = {
+		"firstName": body.firstName,
+		"lastName": body.lastName,
+		"email": body.email,
+		"phoneNumber": phoneNumber,
+		"password": password
+	};
+
+	//let order = await Database.insertOrder();
+	//let orderId = order.insertedId;
+
+	//user = await Database.insertUser(userInfo, orderId);
+
+	let key = await asyncKeyGen("session");
+	sessionGen(key, user);
+	res.cookie("loginKey", key);
+	res.send({ msg: "ok" });
+}
+
 module.exports.asyncLogIn = asyncLogIn;
 module.exports.asyncLogOut = asyncLogOut;
 module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
+module.exports.asyncCreateAccount = asyncCreateAccount;

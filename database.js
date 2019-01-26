@@ -37,11 +37,17 @@ function getDb()
 }
 
 function findActiveSession(key) { return findDoc("activeSessions", "key", key); }
-function findResetRequest(key) { return findDoc("resetRequests", "key", key); }
-function findVerificationRequest(key) { return findDoc("verificationRequests", "key", key); }
+function insertActiveSession(session) { insertDoc("activeSessions", session); };
+function deleteActiveSession(id) { deleteDoc("activeSessions", id); }
+
+module.exports.findActiveSession = findActiveSession;
+module.exports.insertActiveSession = insertActiveSession;
+module.exports.deleteActiveSession = deleteActiveSession;
+
 function findUser(email) { return findDoc("users", "userInfo.email", email); }
 
-function deleteActiveSession(id) { deleteDoc("activeSessions", id); }
+function findResetRequest(key) { return findDoc("resetRequests", "key", key); }
+function findVerificationRequest(key) { return findDoc("verificationRequests", "key", key); }
 
 //Return value: A Promise which resolves to a document
 function findDoc(col, key, val)
@@ -82,11 +88,6 @@ function deleteDoc(col, id)
 	});
 }
 
-module.exports.insertDoc = insertDoc;
-
 module.exports.findUser = findUser;
-module.exports.findActiveSession = findActiveSession;
 module.exports.findResetRequest = findResetRequest;
 module.exports.findVerificationRequest = findVerificationRequest;
-
-module.exports.deleteActiveSession = deleteActiveSession;

@@ -21,6 +21,12 @@ function createEndpoints(app)
 		LoginHelper.asyncGetSessionInfo(req, res);
 	});
 
+	app.post('/create-account', function(req, res)
+	{
+		console.log("Received POST request from client! (create-account)");
+		LoginHelper.asyncCreateAccount(req, res);
+	});
+
 }
 
 module.exports.createEndpoints = createEndpoints;

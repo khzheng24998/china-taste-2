@@ -46,7 +46,7 @@ class CreateAccountBox extends React.Component
     this.setState(update);
   }
 
-  handleClick()
+  async handleClick()
   {
     //Check to see if fields are non-empty
     let error = false;
@@ -83,6 +83,24 @@ class CreateAccountBox extends React.Component
     this.setState(update);
     if (error)
       return;
+
+    //Send create account request to server
+    let res = await post("/create-account", {
+      firstName: this.state.fields["firstName"],
+      lastName: this.state.fields["lastName"],
+      email: this.state.fields["email"],
+      phoneNumber: this.state.fields["phoneNumber"],
+      password: this.state.fields["password"],
+      confirmPassword: this.state.fields["confirmPassword"]
+    });
+
+    if (res.msg !== "ok")
+      this.setState({invalidCredentials: true});
+    else
+    {
+      this.setState({invalidCredentials: false});
+      location.reload();
+    }
   }
 
   meetsRequirements(password)

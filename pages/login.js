@@ -2,7 +2,7 @@ import NavBar from "../components/NavBar.js";
 import Footer from "../components/Footer.js";
 import Field from "../components/Field.js";
 import Link from 'next/link';
-import {post, getCookie} from "../functions.js";
+import {post} from "../functions.js";
 import {boxStyles, boxHeaderStyles, boxFooterStyles, columnStyles, dividerStyles, bold, linkStyles, buttonStyles, errorStyles} from "../styles.js";
 
 class LoginBox extends React.Component
