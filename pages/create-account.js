@@ -95,12 +95,9 @@ class CreateAccountBox extends React.Component
     });
 
     if (res.msg !== "ok")
-      this.setState({invalidCredentials: true});
+      alert("An account under this email already exists!");
     else
-    {
-      this.setState({invalidCredentials: false});
       location.reload();
-    }
   }
 
   meetsRequirements(password)
