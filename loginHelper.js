@@ -8,27 +8,28 @@ const saltRounds = 12;
 
 /* Helper functions */
 
-//Return value: A Promise which resolves to a boolean
+//Return value: A Promise which resolves to a boolean (true if password matches, false otherwise)
 function checkPassword(password, hash)
 {
 	return bcrypt.compare(password, hash).then(res => res);
 }
 
-//Return value: A Promise which resolves to a hash
+//Return value: A Promise which resolves to a hash of password
 function hashPassword(password)
 {
 	return bcrypt.hash(password, saltRounds).then(hash => hash);
 }
 
+//Return value: A phone number string in the format 1234567890 (no special characters)
 function formatPhoneNumber(phoneNumber)
 {
 	let arr = phoneNumber.match(/[0-9]/g);
 	if (arr === null)
 		return "";
 
-	let noSpecialChars = arr.toString();
-	noSpecialChars = noSpecialChars.replace(/,/g, "");
-	return noSpecialChars;
+	let noSpecial = arr.toString();
+	noSpecial = noSpecial.replace(/,/g, "");
+	return noSpecial;
 }
 
 //Return value: None
@@ -38,14 +39,13 @@ function sessionGen(key, user)
 		"key": key,
 		"userId": user._id,
 		"firstName": user.userInfo.firstName,
-		"lastName": user.userInfo.lastName,
-		"email": user.userInfo.email
+		"lastName": user.userInfo.lastName
 	};
 
 	Database.insertActiveSession(session);
 }
 
-//Return value: A string
+//Return value: A random key string
 async function asyncKeyGen(type)
 {
 	let attempts = 0;
@@ -147,10 +147,17 @@ async function asyncCreateAccount(req, res)
 		"password": password
 	};
 
-	//let order = await Database.insertOrder();
-	//let orderId = order.insertedId;
+	let obj = await Database.insertNewOrder();
+	let orderId = obj.insertedId;
+	user = {
+		verified: false,
+		userInfo: userInfo,
+		currentOrder: orderId,
+		pastOrders: []
+	};
 
-	//user = await Database.insertUser(userInfo, orderId);
+	obj = await Database.insertUser(user);
+	user._id = obj.insertedId;
 
 	let key = await asyncKeyGen("session");
 	sessionGen(key, user);
