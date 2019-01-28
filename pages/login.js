@@ -19,6 +19,8 @@ class LoginBox extends React.Component
         email: false,
         password: false
       },
+
+      //Additional state
       invalidCredentials: false
     };
 

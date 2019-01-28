@@ -27,6 +27,8 @@ class CreateAccountBox extends React.Component
         password: false,
         confirmPassword: false
       },
+
+      //Additional state
       passwordMsg: "Required field",
       confirmPasswordMsg: "Required field"
     };
