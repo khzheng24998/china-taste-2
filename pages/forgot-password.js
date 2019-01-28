@@ -47,6 +47,8 @@ class ForgotPasswordBox extends React.Component
     this.setState({error: update});
     if (error)
       return;
+
+    let res = await post("/send-reset-email", { email: this.state.fields["email"] });
   }
 
   render()

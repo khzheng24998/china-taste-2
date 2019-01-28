@@ -1,5 +1,6 @@
 //Custom modules
 const Database = require("./database.js");
+const Email = require("./email.js");
 
 //npm modules
 const crypto = require("crypto");
@@ -45,6 +46,25 @@ function sessionGen(key, user)
 	Database.insertActiveSession(session);
 }
 
+async function asyncResetRequestGen(key, userId)
+{
+	let date = new Date();
+	let currentTime = date.getTime();
+	let expirationDate = (+currentTime) + (+600000);		//Reset key expires in 10 minutes
+
+	let reset = {
+		"key": key,
+		"expiration": expirationDate,
+		"userId": userId
+	};
+
+	let req = await Database.findResetRequestByUser(userId);
+	if (req !== null)
+		; //Need to add code to replace reset request
+	else
+		Database.insertResetRequest(reset);
+}
+
 //Return value: A random key string
 async function asyncKeyGen(type)
 {
@@ -59,7 +79,7 @@ async function asyncKeyGen(type)
 				entity = await Database.findActiveSession(key);
 				break;
 			case "reset":
-				entity = await Database.findResetRequest(key);
+				entity = await Database.findResetRequestByKey(key);
 				break;
 			case "verification":
 				entity = await Database.findVerificationRequest(key);
@@ -165,7 +185,24 @@ async function asyncCreateAccount(req, res)
 	res.send({ msg: "ok" });
 }
 
+async function asyncSendResetLink(req, res)
+{
+	let body = req.body;
+	let user = await Database.findUser(body.email);
+	if (user === null)
+	{
+		res.send({ "msg": "not-found" });
+		return;
+	}
+
+	let key = await asyncKeyGen("reset");
+	asyncResetRequestGen(key, user._id);
+	Email.sendLink("reset", user.userInfo.email, key);
+	res.send({ "msg": "ok" });
+}
+
 module.exports.asyncLogIn = asyncLogIn;
 module.exports.asyncLogOut = asyncLogOut;
 module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
 module.exports.asyncCreateAccount = asyncCreateAccount;
+module.exports.asyncSendResetLink = asyncSendResetLink;

@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/khzheng24998/china-taste-2#readme",
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",

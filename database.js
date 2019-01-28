@@ -55,15 +55,23 @@ function findActiveSession(key) { return findDoc("activeSessions", "key", key); 
 function deleteActiveSession(id) { deleteDoc("activeSessions", id); }
 function insertActiveSession(session)
 {
-	if (!checkInput(["key", "userId", "firstName", "lastName"], session))
-		return null;
-	else
 		return insertDoc("activeSessions", session);
 };
 
 module.exports.findActiveSession = findActiveSession;
 module.exports.insertActiveSession = insertActiveSession;
 module.exports.deleteActiveSession = deleteActiveSession;
+
+function findResetRequestByKey(key) { return findDoc("resetRequests", "key", key); }
+function findResetRequestByUser(userId) { return findDoc("resetRequests", "userId", userId); }
+function insertResetRequest(request)
+{
+	return insertDoc("resetRequests", request);
+}
+
+module.exports.findResetRequestByKey = findResetRequestByKey;
+module.exports.findResetRequestByUser = findResetRequestByUser;
+module.exports.insertResetRequest = insertResetRequest;
 
 function findUser(email) { return findDoc("users", "userInfo.email", email); }
 function insertUser(user)
@@ -73,12 +81,6 @@ function insertUser(user)
 
 module.exports.findUser = findUser;
 module.exports.insertUser = insertUser;
-
-function findResetRequest(key) { return findDoc("resetRequests", "key", key); }
-function findVerificationRequest(key) { return findDoc("verificationRequests", "key", key); }
-
-module.exports.findResetRequest = findResetRequest;
-module.exports.findVerificationRequest = findVerificationRequest;
 
 function insertNewOrder()
 {

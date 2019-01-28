@@ -27,6 +27,12 @@ function createEndpoints(app)
 		LoginHelper.asyncCreateAccount(req, res);
 	});
 
+	app.post('/send-reset-email', function(req, res)
+	{
+		console.log("Received POST request from client! (send-reset-email)");
+		LoginHelper.asyncSendResetLink(req, res);
+	});
+
 }
 
 module.exports.createEndpoints = createEndpoints;
