@@ -201,7 +201,7 @@ async function asyncFetchData(req, res)
 	let body = req.body;
   let response = {};
 
-  if (body.category !== "")
+  if (body.category !== "N/A")
     response.menuItems = await Database.fetchMenuItems(body.category);
 
   let key = req.cookies.loginKey;

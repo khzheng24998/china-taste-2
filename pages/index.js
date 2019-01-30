@@ -21,8 +21,26 @@ const categoryStyles = {
 const menuContainerStyles = {
   display: "inline-block",
   verticalAlign: "top",
-  width: 500,
-	fontFamily: "Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
+  width: 520,
+	fontFamily: "Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
+  marginLeft: 20,
+  paddingRight: 30,
+  paddingLeft: 5
+}
+
+const titleStyles = {
+  borderBottom: "solid 2px #999999",
+  textAlign: "left",
+  fontSize: 24,
+  padding: "0px 0px 5px 0px",
+  marginBottom: 0
+}
+
+const itemStyles = {
+  textAlign: "left",
+  margin: 0,
+  padding: "15px 0px 15px 5px",
+  borderBottom: "solid 1px #cccccc"
 }
 
 const orderContainerStyles = {
@@ -30,14 +48,15 @@ const orderContainerStyles = {
   verticalAlign: "top",
   border: "solid 2px #999999",
   borderRadius: 5,
-  width: 300,
-	fontFamily: "Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
+  width: 330,
+	fontFamily: "Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
+  height: 200
 }
 
 const bodyStyles = {
   margin: "0 auto",
   marginTop: 80,
-  width: "90%",
+  width: "95%",
   textAlign: "center"
 }
 
@@ -55,9 +74,11 @@ class Index extends React.Component
   {
     super(props);
     this.state = {
+      category: "appetizers",
       signedIn: false,
       firstName: "N/A",
-      lastName: "N/A"
+      lastName: "N/A",
+      menuItems: []
     }
   }
 
@@ -80,11 +101,11 @@ class Index extends React.Component
 	{
     let req = { category: "appetizers" };
 		let res = await post("/fetch-data", req);
-    console.log(res);
 
     this.setState({ signedIn: res.sessionInfo.signedIn });
     this.setState({ firstName: res.sessionInfo.firstName });
     this.setState({ lastName: res.sessionInfo.lastName });
+    this.setState({ menuItems: res.menuItems });
 	}
 
   render()
@@ -95,19 +116,28 @@ class Index extends React.Component
 
       <div style={bodyStyles}>
 
-      <div id="categories" style={categoryContainerStyles}>
+      <div style={categoryContainerStyles}>
         <p style={categoryStyles}>Appetizers</p>
         <p style={categoryStyles}>Soup</p>
         <p style={categoryStyles}>Chow Mein</p>
         <p style={categoryStyles}>Chop Suey</p>
       </div>
 
-      <div id="categories" style={menuContainerStyles}>
+      <div style={menuContainerStyles}>
+        <div style={titleStyles}>Appetizers</div>
+        {this.state.menuItems.map(function(item){
+          let cost = item.cost[0];
+          if (item.cost.length > 1)
+            cost += "+";
+          return (<div style={itemStyles}>
+            <p style={{width: "50%", margin: 0, display: "inline-block", textAlign: "left"}}>{item.name}</p>
+            <p style={{width: "48%", margin: 0, display: "inline-block", textAlign: "right"}}>{cost}</p>
+          </div>);
+        })}
       </div>
 
-      <div id="categories" style={orderContainerStyles}>
-        <p>Appetizers</p>
-        <p>Soup</p>
+      <div style={orderContainerStyles}>
+        <div style={{backgroundColor: "#999999", color: "white", height: 50, fontSize: 20, paddingTop: 10}}>Your Order</div>
       </div>
 
       </div>
