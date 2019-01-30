@@ -206,3 +206,15 @@ module.exports.asyncLogOut = asyncLogOut;
 module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
 module.exports.asyncCreateAccount = asyncCreateAccount;
 module.exports.asyncSendResetLink = asyncSendResetLink;
+
+async function asyncFetchMenu(req, res)
+{
+	let body = req.body;
+	let menu = {};
+
+	menu.items = await Database.fetchMenuItems(body.category);
+	menu.msg = "ok";
+	res.send(menu);
+}
+
+module.exports.asyncFetchMenu = asyncFetchMenu;

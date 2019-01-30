@@ -93,6 +93,21 @@ function insertNewOrder()
 
 module.exports.insertNewOrder = insertNewOrder;
 
+//Return value: A Promise which resolves to an array of documents
+function fetchMenuItems(category)
+{
+	let init = initializeDb();
+	return init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		let cursor = chinaTaste.collection("menu_" + category).find();
+		return cursor.toArray();
+	});
+}
+
+module.exports.fetchMenuItems = fetchMenuItems;
+
 //Return value: A Promise which resolves to a document
 function findDoc(col, key, val)
 {

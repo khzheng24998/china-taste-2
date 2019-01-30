@@ -33,6 +33,12 @@ function createEndpoints(app)
 		LoginHelper.asyncSendResetLink(req, res);
 	});
 
+	app.post('/get-menu', function(req, res)
+	{
+		console.log("Received POST request from client! (get-menu)");
+		LoginHelper.asyncFetchMenu(req, res);
+	});
+
 }
 
 module.exports.createEndpoints = createEndpoints;
