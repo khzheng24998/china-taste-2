@@ -54,6 +54,11 @@ class Index extends React.Component
   constructor(props)
   {
     super(props);
+    this.state = {
+      signedIn: false,
+      firstName: "N/A",
+      lastName: "N/A"
+    }
   }
 
   static async getInitialProps({ req })
@@ -73,15 +78,20 @@ class Index extends React.Component
 
   async componentDidMount()
 	{
-		let res = await post("/get-menu", { category: "appetizers" });
-    console.log(res.items);
+    let req = { category: "appetizers" };
+		let res = await post("/fetch-data", req);
+    console.log(res);
+
+    this.setState({ signedIn: res.sessionInfo.signedIn });
+    this.setState({ firstName: res.sessionInfo.firstName });
+    this.setState({ lastName: res.sessionInfo.lastName });
 	}
 
   render()
   {
     return (<div>
       <style jsx global>{` body { margin: 0 } `}</style>
-      <NavBar />
+      <NavBar signedIn={this.state.signedIn} firstName={this.state.firstName} lastName={this.state.lastName} />
 
       <div style={bodyStyles}>
 

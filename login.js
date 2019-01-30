@@ -15,12 +15,6 @@ function createEndpoints(app)
 		LoginHelper.asyncLogOut(req, res);
 	});
 
-	app.post('/get-session-info', function(req, res)
-	{
-		console.log("Received POST request from client! (get-session-info)");
-		LoginHelper.asyncGetSessionInfo(req, res);
-	});
-
 	app.post('/create-account', function(req, res)
 	{
 		console.log("Received POST request from client! (create-account)");
@@ -33,10 +27,10 @@ function createEndpoints(app)
 		LoginHelper.asyncSendResetLink(req, res);
 	});
 
-	app.post('/get-menu', function(req, res)
+	app.post('/fetch-data', function(req, res)
 	{
-		console.log("Received POST request from client! (get-menu)");
-		LoginHelper.asyncFetchMenu(req, res);
+		console.log("Received POST request from client! (fetch-data)");
+		LoginHelper.asyncFetchData(req, res);
 	});
 
 }

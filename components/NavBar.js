@@ -72,10 +72,9 @@ class NavBar extends React.Component {
 	constructor(props)
 	{
 		super(props);
+
 		this.state = {
-			signedIn: false,
 			showDropDown: false,
-			name: "",
 			hover: {
 				profile: false,
 				addresses: false,
@@ -117,17 +116,10 @@ class NavBar extends React.Component {
     location.reload();
   }
 
-	async componentDidMount()
-	{
-		let res = await post("/get-session-info", {});
-		this.setState({
-			signedIn : (res.msg === "signed-in") ? true : false,
-			name: (res.msg === "signed-in") ? (res.firstName + ' ' + res.lastName) : ""
-		});
-	}
-
 	render()
 	{
+		const name = this.props.firstName + " " + this.props.lastName;
+
 		return (<div style={styles}>
 			<style jsx>{` p {margin-top: 5px; margin-bottom: 5px; font-size: 14px;} `}</style>
 			<p style={titleStyles}>China Taste of Vernon, LLC</p>
@@ -135,15 +127,15 @@ class NavBar extends React.Component {
 				<Link href="/"><p style={linkStyles}>Menu</p></Link>
 				<Link href="/about"><p style={linkStyles}>About Us</p></Link>
 
-				{this.state.signedIn && (<div style={linkStyles} onMouseEnter={this.handleMouseEnter}>
+				{this.props.signedIn && (<div style={linkStyles} onMouseEnter={this.handleMouseEnter}>
 					<img src="static/images/profile.png" width="20" style={{verticalAlign: "middle", marginBottom: 2}}/> &#9662;
 				</div>)}
 
-				{this.state.signedIn && this.state.showDropDown && (<div style={dropDownStyles} onMouseLeave={this.handleMouseLeave}>
+				{this.props.signedIn && this.state.showDropDown && (<div style={dropDownStyles} onMouseLeave={this.handleMouseLeave}>
 						<img src="static/images/triangle.png" width="15" height="10" style={triangleStyles}/>
 						<div style={{borderBottom: "solid 1px #dddddd", padding: "2px 0px 2px 10px"}}>
 							<p style={{marginBottom: 3}}>Signed in as</p>
-							<p style={{fontWeight: 450, marginTop: 0}}>{this.state.name}</p>
+							<p style={{fontWeight: 450, marginTop: 0}}>{name}</p>
 						</div>
 						<div style={{padding: "0px 1px 0px 1px"}}>
 							<p id="profile" style={(this.state.hover["profile"]) ? hoverStyles : noHoverStyles} onMouseEnter={this.handleMouseEnter2} onMouseLeave={this.handleMouseLeave2}>Your profile</p>
@@ -155,10 +147,16 @@ class NavBar extends React.Component {
 						</div>
 				</div>)}
 
-				{!this.state.signedIn && <Link href="/login"><p style={linkStyles}>Login</p></Link>}
+				{!this.props.signedIn && <Link href="/login"><p style={linkStyles}>Login</p></Link>}
 			</div>
 		</div>);
 	}
 }
 
-export default NavBar
+NavBar.defaultProps = {
+	signedIn: false,
+	firstName: "N/A",
+	lastName: "N/A"
+};
+
+export default NavBar;

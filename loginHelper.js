@@ -136,16 +136,6 @@ async function asyncLogOut(req, res)
 	res.send({ "msg": "error" });
 }
 
-async function asyncGetSessionInfo(req, res)
-{
-	let key = req.cookies.loginKey;
-	let session = await Database.findActiveSession(key);
-	if (session !== null)
-		res.send({ "msg": "signed-in", "firstName": session.firstName, "lastName": session.lastName });
-	else
-		res.send({ "msg": "signed-out" });
-}
-
 async function asyncCreateAccount(req, res)
 {
 	let body = req.body;
@@ -203,18 +193,38 @@ async function asyncSendResetLink(req, res)
 
 module.exports.asyncLogIn = asyncLogIn;
 module.exports.asyncLogOut = asyncLogOut;
-module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
 module.exports.asyncCreateAccount = asyncCreateAccount;
 module.exports.asyncSendResetLink = asyncSendResetLink;
 
-async function asyncFetchMenu(req, res)
+async function asyncFetchData(req, res)
 {
 	let body = req.body;
-	let menu = {};
+  let response = {};
 
-	menu.items = await Database.fetchMenuItems(body.category);
-	menu.msg = "ok";
-	res.send(menu);
+  if (body.category !== "")
+    response.menuItems = await Database.fetchMenuItems(body.category);
+
+  let key = req.cookies.loginKey;
+  let session = await Database.findActiveSession(key);
+  if (session !== null)
+  {
+    response.sessionInfo = {
+			signedIn: true,
+			firstName: session.firstName,
+			lastName: session.lastName
+		};
+  }
+  else
+  {
+		response.sessionInfo = {
+			signedIn: false,
+			firstName: "N/A",
+			lastName: "N/A"
+		};
+  }
+
+  response.msg = "ok";
+  res.send(response);
 }
 
-module.exports.asyncFetchMenu = asyncFetchMenu;
+module.exports.asyncFetchData = asyncFetchData;
